@@ -101,6 +101,49 @@ body {
     letter-spacing: 0.3px;
 }
 
+/* Navigation bar container */
+.nav-container {
+    max-width: 700px;
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Navigation link styling */
+.nav-link {
+    flex: 1;
+    min-width: 140px;
+    padding: 14px 16px;
+    text-align: center;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #1e3c72;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: 2px solid #d1dce5;
+    letter-spacing: 0.3px;
+}
+
+/* Navigation link hover state */
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 60, 114, 0.2);
+    border-color: #2a5298;
+}
+
+/* Active navigation link */
+.nav-link.active {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    border-color: #1e3c72;
+    box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+}
+
 /* Main container for the form with centered layout */
 .container {
     max-width: 700px;
