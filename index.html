@@ -1,32 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Character encoding for proper text display -->
     <meta charset="UTF-8">
+    <!-- Viewport settings for responsive design on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information Form</title>
+    <!-- Link to external CSS stylesheet -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Main container for the form -->
     <div class="container">
         <h1>Life Insurance Application</h1>
         <p>Please enter your personal details below:</p>
         
+        <!-- Life insurance application form -->
         <form id="userForm">
+            <!-- Full name input field -->
             <div class="form-group">
                 <label for="fullName">Full Name</label>
                 <input type="text" id="fullName" name="fullName" required>
             </div>
             
+            <!-- Date of birth input field -->
             <div class="form-group">
                 <label for="dateOfBirth">Date of Birth</label>
                 <input type="date" id="dateOfBirth" name="dateOfBirth" required>
             </div>
             
+            <!-- Address textarea field -->
             <div class="form-group">
                 <label for="address">Address</label>
                 <textarea id="address" name="address" rows="3" required></textarea>
             </div>
             
+            <!-- Gender dropdown selection -->
             <div class="form-group">
                 <label for="gender">Gender</label>
                 <select id="gender" name="gender" required>
@@ -38,16 +47,19 @@
                 </select>
             </div>
             
+            <!-- Occupation input field -->
             <div class="form-group">
                 <label for="occupation">Occupation</label>
                 <input type="text" id="occupation" name="occupation" required>
             </div>
             
+            <!-- Annual income input field (numeric) -->
             <div class="form-group">
                 <label for="income">Annual Income (£)</label>
                 <input type="number" id="income" name="income" min="0" step="1000" required>
             </div>
             
+            <!-- Marital status dropdown selection -->
             <div class="form-group">
                 <label for="maritalStatus">Marital Status</label>
                 <select id="maritalStatus" name="maritalStatus" required>
@@ -60,22 +72,27 @@
                 </select>
             </div>
             
+            <!-- Number of dependants input field (numeric) -->
             <div class="form-group">
                 <label for="dependants">Number of Dependants</label>
                 <input type="number" id="dependants" name="dependants" min="0" required>
             </div>
             
+            <!-- Submit button -->
             <button type="submit">Submit</button>
         </form>
         
+        <!-- Container for success/error messages -->
         <div id="message"></div>
     </div>
     
     <script>
+        // Add event listener for form submission
         document.getElementById('userForm').addEventListener('submit', function(e) {
+            // Prevent default form submission behaviour (page reload)
             e.preventDefault();
             
-            // Collect form data
+            // Collect all form data into a JavaScript object
             const formData = {
                 fullName: document.getElementById('fullName').value,
                 dateOfBirth: document.getElementById('dateOfBirth').value,
@@ -85,25 +102,28 @@
                 income: document.getElementById('income').value,
                 maritalStatus: document.getElementById('maritalStatus').value,
                 dependants: document.getElementById('dependants').value,
-                submittedAt: new Date().toISOString()
+                submittedAt: new Date().toISOString() // Add timestamp of submission
             };
             
-            // Convert to JSON
+            // Convert the form data object to a JSON string with formatting
             const jsonData = JSON.stringify(formData, null, 2);
             
-            // Create a blob and download link
+            // Create a Blob object containing the JSON data
             const blob = new Blob([jsonData], { type: 'application/json' });
+            // Create a temporary URL for the blob
             const url = URL.createObjectURL(blob);
+            // Create a temporary anchor element for downloading
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'life_insurance_application.json';
+            a.download = 'life_insurance_application.json'; // Set the download filename
             document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            a.click(); // Trigger the download
+            document.body.removeChild(a); // Clean up the anchor element
+            URL.revokeObjectURL(url); // Release the blob URL
             
-            // Show success message
+            // Display success message to the user
             const messageDiv = document.getElementById('message');
+            // Insert success message HTML with submitted data
             messageDiv.innerHTML = `
                 <div class="success">
                     <p><strong>Thank you for submitting your information!</strong></p>
