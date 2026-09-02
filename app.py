@@ -9,6 +9,7 @@ import json
 import os
 from datetime import datetime
 from bmi_calculator import BMICalculator
+from risk_assessment import RiskAssessment
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -117,11 +118,17 @@ def submit_lifestyle():
 def submit_complete():
     """
     Handle complete application submission endpoint.
-    Receives all form data combined, saves it to a single JSON file, and returns success response.
+    Receives all form data combined, calculates risk assessment, saves it to a single JSON file, and returns success response.
     """
     try:
         # Get JSON data from the request
         complete_application = request.get_json()
+        
+        # Calculate risk assessment
+        risk_result = RiskAssessment.calculate_risk_score(complete_application)
+        
+        # Add risk assessment to application data
+        complete_application['riskAssessment'] = risk_result
         
         # Generate a unique filename with timestamp
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -131,11 +138,12 @@ def submit_complete():
         with open(filename, 'w') as f:
             json.dump(complete_application, f, indent=2)
         
-        # Return success response
+        # Return success response with risk assessment
         return jsonify({
             'status': 'success',
             'message': 'Complete application saved successfully',
-            'filename': filename
+            'filename': filename,
+            'riskAssessment': risk_result
         }), 200
         
     except Exception as e:

@@ -368,14 +368,36 @@
                     localStorage.removeItem('lifestyleInfo');
                     localStorage.removeItem('financialInfo');
                     
-                    // Display success message to the user
+                    // Get risk assessment data
+                    const risk = result.riskAssessment;
+                    
+                    // Determine message class based on decision
+                    let messageClass = 'success';
+                    let decisionText = '';
+                    
+                    if (risk.decision === 'ACCEPT') {
+                        messageClass = 'success';
+                        decisionText = '<p><strong>Decision: ACCEPTED</strong></p><p>Your application has been accepted at standard rates.</p>';
+                    } else if (risk.decision === 'ACCEPT_WITH_LOADING') {
+                        messageClass = 'warning';
+                        decisionText = '<p><strong>Decision: ACCEPTED WITH LOADING</strong></p><p>Your application has been accepted with an increased premium due to moderate risk factors.</p>';
+                    } else if (risk.decision === 'REFER') {
+                        messageClass = 'warning';
+                        decisionText = '<p><strong>Decision: REFERRED FOR REVIEW</strong></p><p>Your application requires further review by our underwriting team. We will contact you within 5 working days.</p>';
+                    }
+                    
+                    // Display success message with risk assessment to the user
                     messageDiv.innerHTML = `
-                        <div class="success">
+                        <div class="${messageClass}">
                             <p><strong>Thank you for completing your life insurance application!</strong></p>
                             <p>Your complete application has been saved to: <strong>${result.filename}</strong></p>
                             <p><strong>Coverage Amount:</strong> £${parseInt(financialData.coverageAmount).toLocaleString()}</p>
                             <p><strong>Primary Beneficiary:</strong> ${financialData.beneficiaryName}</p>
-                            <p>We will review your application and contact you shortly.</p>
+                            <hr style="margin: 15px 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);">
+                            <p><strong>Risk Assessment Results:</strong></p>
+                            ${decisionText}
+                            <p><strong>Risk Level:</strong> ${risk.risk_level}</p>
+                            <p><strong>Total Risk Score:</strong> ${risk.total_score}</p>
                         </div>
                     `;
                     

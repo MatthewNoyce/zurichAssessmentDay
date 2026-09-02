@@ -279,6 +279,24 @@ button:active {
     line-height: 1.6;
 }
 
+/* Warning message styling with amber theme */
+.warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 2px solid #ffc107;
+    color: #856404;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+}
+
+/* Paragraph styling within warning messages */
+.warning p {
+    margin-bottom: 8px;
+    color: #856404;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
 /* Error message styling with red theme */
 .error {
     background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
