@@ -386,18 +386,33 @@
                         decisionText = '<p><strong>Decision: REFERRED FOR REVIEW</strong></p><p>Your application requires further review by our underwriting team. We will contact you within 5 working days.</p>';
                     }
                     
+                    // Build risk breakdown list
+                    let breakdownList = '';
+                    if (risk.breakdown) {
+                        breakdownList = '<p><strong>Risk Score Breakdown:</strong></p><ul style="text-align: left; margin: 10px 0; padding-left: 20px;">';
+                        for (const [category, score] of Object.entries(risk.breakdown)) {
+                            if (score > 0) {
+                                const categoryName = category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                                breakdownList += `<li style="margin-bottom: 5px;">${categoryName}: +${score} points</li>`;
+                            }
+                        }
+                        breakdownList += '</ul>';
+                    }
+                    
                     // Display success message with risk assessment to the user
                     messageDiv.innerHTML = `
                         <div class="${messageClass}">
-                            <p><strong>Thank you for completing your life insurance application!</strong></p>
-                            <p>Your complete application has been saved to: <strong>${result.filename}</strong></p>
+                            <h2 style="margin-bottom: 15px;">Application Assessment Complete</h2>
                             <p><strong>Coverage Amount:</strong> £${parseInt(financialData.coverageAmount).toLocaleString()}</p>
                             <p><strong>Primary Beneficiary:</strong> ${financialData.beneficiaryName}</p>
                             <hr style="margin: 15px 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);">
                             <p><strong>Risk Assessment Results:</strong></p>
                             ${decisionText}
                             <p><strong>Risk Level:</strong> ${risk.risk_level}</p>
-                            <p><strong>Total Risk Score:</strong> ${risk.total_score}</p>
+                            <p><strong>Total Risk Score:</strong> ${risk.total_score} points</p>
+                            <hr style="margin: 15px 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);">
+                            ${breakdownList}
+                            <p style="margin-top: 15px; font-size: 13px;"><em>Application saved as: ${result.filename}</em></p>
                         </div>
                     `;
                     
