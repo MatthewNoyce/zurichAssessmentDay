@@ -8,23 +8,61 @@
 </head>
 <body>
     <div class="container">
-        <h1>User Information Form</h1>
-        <p>Please enter your details below:</p>
+        <h1>Life Insurance Application</h1>
+        <p>Please enter your personal details below:</p>
         
         <form id="userForm">
             <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" id="firstName" name="firstName" required>
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required>
             </div>
             
             <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" name="lastName" required>
+                <label for="dateOfBirth">Date of Birth</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" required>
             </div>
             
             <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required>
+                <label for="address">Address</label>
+                <textarea id="address" name="address" rows="3" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Please select...</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="occupation">Occupation</label>
+                <input type="text" id="occupation" name="occupation" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="income">Annual Income (£)</label>
+                <input type="number" id="income" name="income" min="0" step="1000" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="maritalStatus">Marital Status</label>
+                <select id="maritalStatus" name="maritalStatus" required>
+                    <option value="">Please select...</option>
+                    <option value="single">Single</option>
+                    <option value="married">Married</option>
+                    <option value="civil-partnership">Civil Partnership</option>
+                    <option value="divorced">Divorced</option>
+                    <option value="widowed">Widowed</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="dependants">Number of Dependants</label>
+                <input type="number" id="dependants" name="dependants" min="0" required>
             </div>
             
             <button type="submit">Submit</button>
@@ -37,16 +75,42 @@
         document.getElementById('userForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('email').value;
+            // Collect form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                address: document.getElementById('address').value,
+                gender: document.getElementById('gender').value,
+                occupation: document.getElementById('occupation').value,
+                income: document.getElementById('income').value,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                dependants: document.getElementById('dependants').value,
+                submittedAt: new Date().toISOString()
+            };
             
+            // Convert to JSON
+            const jsonData = JSON.stringify(formData, null, 2);
+            
+            // Create a blob and download link
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'life_insurance_application.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show success message
             const messageDiv = document.getElementById('message');
             messageDiv.innerHTML = `
                 <div class="success">
                     <p><strong>Thank you for submitting your information!</strong></p>
-                    <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-                    <p><strong>Email:</strong> ${email}</p>
+                    <p>Your application data has been saved to a JSON file.</p>
+                    <p><strong>Name:</strong> ${formData.fullName}</p>
+                    <p><strong>Date of Birth:</strong> ${formData.dateOfBirth}</p>
+                    <p><strong>Occupation:</strong> ${formData.occupation}</p>
                 </div>
             `;
         });

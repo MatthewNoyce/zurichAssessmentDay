@@ -41,18 +41,35 @@ label {
 }
 
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
+    font-family: Arial, sans-serif;
 }
 
 input[type="text"]:focus,
-input[type="email"]:focus {
+input[type="email"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
     outline: none;
     border-color: #4CAF50;
+}
+
+textarea {
+    resize: vertical;
+}
+
+select {
+    cursor: pointer;
 }
 
 button {
