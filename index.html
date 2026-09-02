@@ -88,7 +88,7 @@
     
     <script>
         // Add event listener for form submission
-        document.getElementById('userForm').addEventListener('submit', function(e) {
+        document.getElementById('userForm').addEventListener('submit', async function(e) {
             // Prevent default form submission behaviour (page reload)
             e.preventDefault();
             
@@ -105,34 +105,49 @@
                 submittedAt: new Date().toISOString() // Add timestamp of submission
             };
             
-            // Convert the form data object to a JSON string with formatting
-            const jsonData = JSON.stringify(formData, null, 2);
-            
-            // Create a Blob object containing the JSON data
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            // Create a temporary URL for the blob
-            const url = URL.createObjectURL(blob);
-            // Create a temporary anchor element for downloading
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'life_insurance_application.json'; // Set the download filename
-            document.body.appendChild(a);
-            a.click(); // Trigger the download
-            document.body.removeChild(a); // Clean up the anchor element
-            URL.revokeObjectURL(url); // Release the blob URL
-            
-            // Display success message to the user
             const messageDiv = document.getElementById('message');
-            // Insert success message HTML with submitted data
-            messageDiv.innerHTML = `
-                <div class="success">
-                    <p><strong>Thank you for submitting your information!</strong></p>
-                    <p>Your application data has been saved to a JSON file.</p>
-                    <p><strong>Name:</strong> ${formData.fullName}</p>
-                    <p><strong>Date of Birth:</strong> ${formData.dateOfBirth}</p>
-                    <p><strong>Occupation:</strong> ${formData.occupation}</p>
-                </div>
-            `;
+            
+            try {
+                // Send form data to the Flask backend server
+                const response = await fetch('http://localhost:5000/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                // Parse the JSON response from the server
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Display success message to the user
+                    messageDiv.innerHTML = `
+                        <div class="success">
+                            <p><strong>Thank you for submitting your information!</strong></p>
+                            <p>Your application data has been saved to: <strong>${result.filename}</strong></p>
+                            <p><strong>Name:</strong> ${formData.fullName}</p>
+                            <p><strong>Date of Birth:</strong> ${formData.dateOfBirth}</p>
+                            <p><strong>Occupation:</strong> ${formData.occupation}</p>
+                        </div>
+                    `;
+                } else {
+                    // Display error message if server returned an error
+                    messageDiv.innerHTML = `
+                        <div class="error">
+                            <p><strong>Error:</strong> ${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                // Display error message if the request failed
+                messageDiv.innerHTML = `
+                    <div class="error">
+                        <p><strong>Error:</strong> Could not connect to server. Please make sure the Flask server is running.</p>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
         });
     </script>
 </body>

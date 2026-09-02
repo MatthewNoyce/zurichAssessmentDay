@@ -120,3 +120,18 @@ button:hover {
     margin-bottom: 5px;
     color: #155724;
 }
+
+/* Error message styling with red theme */
+.error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+/* Paragraph styling within error messages */
+.error p {
+    margin-bottom: 5px;
+    color: #721c24;
+}
