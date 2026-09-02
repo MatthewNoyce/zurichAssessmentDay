@@ -1,13 +1,12 @@
 Need a front end (webpage type thing)
 need back end (what language)
 need some form of logic to decide what is accepted immediately/referred/declined
-need a list of questions to ask the collect the health details 
-tidy up and add how many pages are left to complete 
+need a list of questions to ask the collect the health details  
 
 addtional ideas 
 -add file upload for medical documents/history 
--do input validations and sanitisations 
--chacnge financial information 
+-do input validations and sanitisations   
+-make some fields mandatory and some optional 
 
 Personal Information:                                                                                                                                    
 
