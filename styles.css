@@ -13,6 +13,49 @@ body {
     padding: 40px 20px;
 }
 
+/* Navigation buttons container */
+.nav-buttons {
+    max-width: 700px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.nav-button {
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #1e3c72;
+    border: 2px solid #2a5298;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.nav-button:hover {
+    background-color: #2a5298;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(42, 82, 152, 0.3);
+}
+
+.nav-button.active {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    border-color: #1e3c72;
+}
+
+.nav-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Progress bar container */
 .progress-container {
     max-width: 700px;
