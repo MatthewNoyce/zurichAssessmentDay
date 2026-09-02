@@ -1,0 +1,52 @@
+Need a front end (webpage type thing)
+need back end (what language)
+need some form of logic to decide what is accepted immediately/referred/declined
+need a list of questions to ask the collect the health details 
+tidy up and add how many pages are left to complete 
+
+addtional ideas 
+-add file upload for medical documents/history 
+-do input validations and sanitisations 
+-chacnge financial information 
+
+Personal Information:                                                                                                                                    
+
+ • Full name, date of birth, and address                                                                                                                 
+ • Gender                                                                                                                                                
+ • Occupation and income                                                                                                                                 
+ • Marital status and number of dependents                                                                                                               
+
+Health and Medical History:                                                                                                                              
+
+ • Height and weight (to calculate BMI)                                                                                                                  
+ • Current medications                                                                                                                                   
+ • Pre-existing medical conditions (diabetes, heart disease, cancer, etc.)                                                                               
+ • Previous surgeries or hospitalisations                                                                                                                
+ • Family medical history (particularly heart disease, cancer, stroke)                                                                                   
+ • Mental health history (depression, anxiety)                                                                                                           
+ • Blood pressure and cholesterol levels                                                                                                                 
+
+Lifestyle Questions:                                                                                                                                     
+
+ • Do you smoke or use tobacco products? (If yes, how much and for how long?)                                                                            
+ • Alcohol consumption habits                                                                                                                            
+ • Recreational drug use                                                                                                                                 
+ • Participation in hazardous activities (skydiving, scuba diving, motor racing)                                                                         
+
+Driving History:                                                                                                                                         
+
+ • Driving licence status                                                                                                                                
+ • Any motoring convictions or accidents                                                                                                                 
+
+Financial Information:                                                                                                                                   
+
+ • Desired coverage amount                                                                                                                               
+ • Existing life insurance policies                                                                                                                      
+ • Annual income and assets                                                                                                                              
+
+Additional Questions:                                                                                                                                    
+
+ • Travel to high-risk countries                                                                                                                         
+ • Criminal history                                                                                                                                      
+ • Beneficiary information                                                                                                                               
+ • Whether you've been declined for insurance previously             
