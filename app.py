@@ -3,11 +3,13 @@ Flask backend server for life insurance application form.
 Receives form data via POST request and saves it as a JSON file.
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import json
 import os
 from datetime import datetime
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Initialize Flask application
 app = Flask(__name__)
@@ -144,28 +146,33 @@ def submit_complete():
 
 @app.route('/')
 def index():
-    """Serve the main landing page."""
-    return app.send_static_file('index.html')
+    """Serve the main HTML page."""
+    return send_file(os.path.join(BASE_DIR, 'index.html'))
+
+@app.route('/styles.css')
+def styles_css():
+    """Serve the stylesheet from the project root."""
+    return send_file(os.path.join(BASE_DIR, 'styles.css'))
 
 @app.route('/personal.html')
 def personal():
     """Serve the personal information page."""
-    return app.send_static_file('personal.html')
+    return send_file(os.path.join(BASE_DIR, 'personal.html'))
 
 @app.route('/health.html')
 def health():
     """Serve the health history page."""
-    return app.send_static_file('health.html')
+    return send_file(os.path.join(BASE_DIR, 'health.html'))
 
 @app.route('/lifestyle.html')
 def lifestyle():
     """Serve the lifestyle history page."""
-    return app.send_static_file('lifestyle.html')
+    return send_file(os.path.join(BASE_DIR, 'lifestyle.html'))
 
 @app.route('/financial.html')
 def financial():
     """Serve the financial information page."""
-    return app.send_static_file('financial.html')
+    return send_file(os.path.join(BASE_DIR, 'financial.html'))
 
 if __name__ == '__main__':
     # Run the Flask development server
