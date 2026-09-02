@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Character encoding for proper text display -->
+    <meta charset="UTF-8">
+    <!-- Viewport settings for responsive design on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial & Additional Information</title>
+    <!-- Link to external CSS stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main container for the form -->
+    <div class="container">
+        <h1>Financial & Additional Information</h1>
+        <p>Please provide your financial details and answer additional questions:</p>
+        
+        <!-- Financial and additional information form -->
+        <form id="financialForm">
+            <!-- Desired coverage amount -->
+            <div class="form-group">
+                <label for="coverageAmount">Desired Coverage Amount (£)</label>
+                <input type="number" id="coverageAmount" name="coverageAmount" min="0" step="10000" placeholder="e.g., 250000" required>
+            </div>
+            
+            <!-- Existing life insurance policies -->
+            <div class="form-group">
+                <label for="existingPolicies">Do you have existing life insurance policies?</label>
+                <select id="existingPolicies" name="existingPolicies" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="policiesDetails" style="display: none;">
+                <label for="policiesInfo">Please provide details of existing policies</label>
+                <textarea id="policiesInfo" name="policiesInfo" rows="3" placeholder="Provider, coverage amount, and policy type"></textarea>
+            </div>
+            
+            <!-- Annual income (already collected but asking again for verification) -->
+            <div class="form-group">
+                <label for="annualIncome">Annual Income (£)</label>
+                <input type="number" id="annualIncome" name="annualIncome" min="0" step="1000" required>
+            </div>
+            
+            <!-- Assets -->
+            <div class="form-group">
+                <label for="assets">Total Assets (£)</label>
+                <input type="number" id="assets" name="assets" min="0" step="10000" placeholder="e.g., property, savings, investments" required>
+            </div>
+            
+            <!-- Travel to high-risk countries -->
+            <div class="form-group">
+                <label for="highRiskTravel">Do you travel to high-risk countries?</label>
+                <select id="highRiskTravel" name="highRiskTravel" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                    <option value="planning">Planning to</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="travelDetails" style="display: none;">
+                <label for="travelInfo">Please provide details</label>
+                <textarea id="travelInfo" name="travelInfo" rows="3" placeholder="Countries and frequency of travel"></textarea>
+            </div>
+            
+            <!-- Criminal history -->
+            <div class="form-group">
+                <label for="criminalHistory">Do you have any criminal convictions?</label>
+                <select id="criminalHistory" name="criminalHistory" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="criminalDetails" style="display: none;">
+                <label for="criminalInfo">Please provide details</label>
+                <textarea id="criminalInfo" name="criminalInfo" rows="3" placeholder="Nature of conviction and date"></textarea>
+            </div>
+            
+            <!-- Beneficiary information -->
+            <div class="form-group">
+                <label for="beneficiaryName">Primary Beneficiary Name</label>
+                <input type="text" id="beneficiaryName" name="beneficiaryName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="beneficiaryRelationship">Relationship to Beneficiary</label>
+                <select id="beneficiaryRelationship" name="beneficiaryRelationship" required>
+                    <option value="">Please select...</option>
+                    <option value="spouse">Spouse</option>
+                    <option value="partner">Partner</option>
+                    <option value="child">Child</option>
+                    <option value="parent">Parent</option>
+                    <option value="sibling">Sibling</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="beneficiaryDOB">Beneficiary Date of Birth</label>
+                <input type="date" id="beneficiaryDOB" name="beneficiaryDOB" required>
+            </div>
+            
+            <!-- Secondary beneficiary (optional) -->
+            <div class="form-group">
+                <label for="secondaryBeneficiary">Secondary Beneficiary Name (Optional)</label>
+                <input type="text" id="secondaryBeneficiary" name="secondaryBeneficiary">
+            </div>
+            
+            <!-- Previous insurance declinations -->
+            <div class="form-group">
+                <label for="previousDeclination">Have you ever been declined for life insurance?</label>
+                <select id="previousDeclination" name="previousDeclination" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="declinationDetails" style="display: none;">
+                <label for="declinationInfo">Please provide details</label>
+                <textarea id="declinationInfo" name="declinationInfo" rows="3" placeholder="Insurance company and reason for declination"></textarea>
+            </div>
+            
+            <!-- Submit button -->
+            <button type="submit">Submit Complete Application</button>
+        </form>
+        
+        <!-- Container for success/error messages -->
+        <div id="message"></div>
+    </div>
+    
+    <script>
+        // Show/hide conditional fields based on selections
+        document.getElementById('existingPolicies').addEventListener('change', function() {
+            const policiesDetails = document.getElementById('policiesDetails');
+            if (this.value === 'yes') {
+                policiesDetails.style.display = 'block';
+                document.getElementById('policiesInfo').required = true;
+            } else {
+                policiesDetails.style.display = 'none';
+                document.getElementById('policiesInfo').required = false;
+            }
+        });
+        
+        document.getElementById('highRiskTravel').addEventListener('change', function() {
+            const travelDetails = document.getElementById('travelDetails');
+            if (this.value === 'yes' || this.value === 'planning') {
+                travelDetails.style.display = 'block';
+                document.getElementById('travelInfo').required = true;
+            } else {
+                travelDetails.style.display = 'none';
+                document.getElementById('travelInfo').required = false;
+            }
+        });
+        
+        document.getElementById('criminalHistory').addEventListener('change', function() {
+            const criminalDetails = document.getElementById('criminalDetails');
+            if (this.value === 'yes') {
+                criminalDetails.style.display = 'block';
+                document.getElementById('criminalInfo').required = true;
+            } else {
+                criminalDetails.style.display = 'none';
+                document.getElementById('criminalInfo').required = false;
+            }
+        });
+        
+        document.getElementById('previousDeclination').addEventListener('change', function() {
+            const declinationDetails = document.getElementById('declinationDetails');
+            if (this.value === 'yes') {
+                declinationDetails.style.display = 'block';
+                document.getElementById('declinationInfo').required = true;
+            } else {
+                declinationDetails.style.display = 'none';
+                document.getElementById('declinationInfo').required = false;
+            }
+        });
+        
+        // Add event listener for form submission
+        document.getElementById('financialForm').addEventListener('submit', async function(e) {
+            // Prevent default form submission behaviour (page reload)
+            e.preventDefault();
+            
+            // Collect all financial form data into a JavaScript object
+            const financialData = {
+                coverageAmount: document.getElementById('coverageAmount').value,
+                existingPolicies: document.getElementById('existingPolicies').value,
+                policiesInfo: document.getElementById('policiesInfo').value,
+                annualIncome: document.getElementById('annualIncome').value,
+                assets: document.getElementById('assets').value,
+                highRiskTravel: document.getElementById('highRiskTravel').value,
+                travelInfo: document.getElementById('travelInfo').value,
+                criminalHistory: document.getElementById('criminalHistory').value,
+                criminalInfo: document.getElementById('criminalInfo').value,
+                beneficiaryName: document.getElementById('beneficiaryName').value,
+                beneficiaryRelationship: document.getElementById('beneficiaryRelationship').value,
+                beneficiaryDOB: document.getElementById('beneficiaryDOB').value,
+                secondaryBeneficiary: document.getElementById('secondaryBeneficiary').value,
+                previousDeclination: document.getElementById('previousDeclination').value,
+                declinationInfo: document.getElementById('declinationInfo').value,
+                submittedAt: new Date().toISOString() // Add timestamp of submission
+            };
+            
+            const messageDiv = document.getElementById('message');
+            
+            try {
+                // Send financial data to the Flask backend server
+                const response = await fetch('http://localhost:5000/submit-financial', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(financialData)
+                });
+                
+                // Parse the JSON response from the server
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Display success message to the user
+                    messageDiv.innerHTML = `
+                        <div class="success">
+                            <p><strong>Thank you for completing your life insurance application!</strong></p>
+                            <p>Your financial data has been saved to: <strong>${result.filename}</strong></p>
+                            <p>All sections of your application have been submitted successfully.</p>
+                            <p><strong>Coverage Amount:</strong> £${parseInt(financialData.coverageAmount).toLocaleString()}</p>
+                            <p><strong>Primary Beneficiary:</strong> ${financialData.beneficiaryName}</p>
+                            <p>We will review your application and contact you shortly.</p>
+                        </div>
+                    `;
+                    
+                    // Scroll to the message
+                    messageDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // Display error message if server returned an error
+                    messageDiv.innerHTML = `
+                        <div class="error">
+                            <p><strong>Error:</strong> ${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                // Display error message if the request failed
+                messageDiv.innerHTML = `
+                    <div class="error">
+                        <p><strong>Error:</strong> Could not connect to server. Please make sure the Flask server is running.</p>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

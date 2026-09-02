@@ -110,6 +110,38 @@ def submit_lifestyle():
             'message': str(e)
         }), 500
 
+@app.route('/submit-financial', methods=['POST'])
+def submit_financial():
+    """
+    Handle financial form submission endpoint.
+    Receives JSON data, saves it to a file, and returns success response.
+    """
+    try:
+        # Get JSON data from the request
+        financial_data = request.get_json()
+        
+        # Generate a unique filename with timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'financial_info_{timestamp}.json'
+        
+        # Save the JSON data to a file in the current directory
+        with open(filename, 'w') as f:
+            json.dump(financial_data, f, indent=2)
+        
+        # Return success response
+        return jsonify({
+            'status': 'success',
+            'message': 'Financial information saved successfully',
+            'filename': filename
+        }), 200
+        
+    except Exception as e:
+        # Return error response if something goes wrong
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
 @app.route('/')
 def index():
     """Serve the main HTML page."""
@@ -124,6 +156,11 @@ def health():
 def lifestyle():
     """Serve the lifestyle history page."""
     return app.send_static_file('lifestyle.html')
+
+@app.route('/financial.html')
+def financial():
+    """Serve the financial information page."""
+    return app.send_static_file('financial.html')
 
 if __name__ == '__main__':
     # Run the Flask development server
