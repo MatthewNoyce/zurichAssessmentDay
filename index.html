@@ -106,41 +106,11 @@
                 submittedAt: new Date().toISOString() // Add timestamp of submission
             };
             
-            const messageDiv = document.getElementById('message');
+            // Save form data to localStorage
+            localStorage.setItem('personalInfo', JSON.stringify(formData));
             
-            try {
-                // Send form data to the Flask backend server
-                const response = await fetch('http://localhost:5000/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                // Parse the JSON response from the server
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    // Redirect to health history page
-                    window.location.href = 'health.html';
-                } else {
-                    // Display error message if server returned an error
-                    messageDiv.innerHTML = `
-                        <div class="error">
-                            <p><strong>Error:</strong> ${result.message}</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                // Display error message if the request failed
-                messageDiv.innerHTML = `
-                    <div class="error">
-                        <p><strong>Error:</strong> Could not connect to server. Please make sure the Flask server is running.</p>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-            }
+            // Redirect to health history page
+            window.location.href = 'health.html';
         });
     </script>
 </body>

@@ -136,41 +136,11 @@
                 submittedAt: new Date().toISOString() // Add timestamp of submission
             };
             
-            const messageDiv = document.getElementById('message');
+            // Save health data to localStorage
+            localStorage.setItem('healthInfo', JSON.stringify(healthData));
             
-            try {
-                // Send health data to the Flask backend server
-                const response = await fetch('http://localhost:5000/submit-health', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(healthData)
-                });
-                
-                // Parse the JSON response from the server
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    // Redirect to lifestyle page
-                    window.location.href = 'lifestyle.html';
-                } else {
-                    // Display error message if server returned an error
-                    messageDiv.innerHTML = `
-                        <div class="error">
-                            <p><strong>Error:</strong> ${result.message}</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                // Display error message if the request failed
-                messageDiv.innerHTML = `
-                    <div class="error">
-                        <p><strong>Error:</strong> Could not connect to server. Please make sure the Flask server is running.</p>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-            }
+            // Redirect to lifestyle page
+            window.location.href = 'lifestyle.html';
         });
     </script>
 </body>
