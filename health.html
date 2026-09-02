@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Character encoding for proper text display -->
+    <meta charset="UTF-8">
+    <!-- Viewport settings for responsive design on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health & Medical History</title>
+    <!-- Link to external CSS stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main container for the form -->
+    <div class="container">
+        <h1>Health & Medical History</h1>
+        <p>Please provide your health and medical information:</p>
+        
+        <!-- Health and medical history form -->
+        <form id="healthForm">
+            <!-- Height input field -->
+            <div class="form-group">
+                <label for="height">Height (cm)</label>
+                <input type="number" id="height" name="height" min="0" step="0.1" required>
+            </div>
+            
+            <!-- Weight input field -->
+            <div class="form-group">
+                <label for="weight">Weight (kg)</label>
+                <input type="number" id="weight" name="weight" min="0" step="0.1" required>
+            </div>
+            
+            <!-- BMI display (calculated automatically) -->
+            <div class="form-group">
+                <label>BMI (Body Mass Index)</label>
+                <input type="text" id="bmi" name="bmi" readonly>
+            </div>
+            
+            <!-- Current medications textarea -->
+            <div class="form-group">
+                <label for="medications">Current Medications</label>
+                <textarea id="medications" name="medications" rows="3" placeholder="List all current medications, or write 'None'"></textarea>
+            </div>
+            
+            <!-- Pre-existing medical conditions -->
+            <div class="form-group">
+                <label for="medicalConditions">Pre-existing Medical Conditions</label>
+                <textarea id="medicalConditions" name="medicalConditions" rows="3" placeholder="e.g., diabetes, heart disease, cancer, etc., or write 'None'" required></textarea>
+            </div>
+            
+            <!-- Previous surgeries or hospitalisations -->
+            <div class="form-group">
+                <label for="surgeries">Previous Surgeries or Hospitalisations</label>
+                <textarea id="surgeries" name="surgeries" rows="3" placeholder="List any previous surgeries or hospital stays, or write 'None'" required></textarea>
+            </div>
+            
+            <!-- Family medical history -->
+            <div class="form-group">
+                <label for="familyHistory">Family Medical History</label>
+                <textarea id="familyHistory" name="familyHistory" rows="3" placeholder="Particularly heart disease, cancer, stroke, or write 'None'" required></textarea>
+            </div>
+            
+            <!-- Mental health history -->
+            <div class="form-group">
+                <label for="mentalHealth">Mental Health History</label>
+                <textarea id="mentalHealth" name="mentalHealth" rows="3" placeholder="e.g., depression, anxiety, or write 'None'" required></textarea>
+            </div>
+            
+            <!-- Blood pressure -->
+            <div class="form-group">
+                <label for="bloodPressure">Blood Pressure (e.g., 120/80)</label>
+                <input type="text" id="bloodPressure" name="bloodPressure" placeholder="e.g., 120/80" required>
+            </div>
+            
+            <!-- Cholesterol levels -->
+            <div class="form-group">
+                <label for="cholesterol">Cholesterol Level (mmol/L)</label>
+                <input type="number" id="cholesterol" name="cholesterol" min="0" step="0.1" placeholder="e.g., 5.2">
+            </div>
+            
+            <!-- Submit button -->
+            <button type="submit">Submit Application</button>
+        </form>
+        
+        <!-- Container for success/error messages -->
+        <div id="message"></div>
+    </div>
+    
+    <script>
+        // Calculate BMI automatically when height or weight changes
+        const heightInput = document.getElementById('height');
+        const weightInput = document.getElementById('weight');
+        const bmiInput = document.getElementById('bmi');
+        
+        function calculateBMI() {
+            const height = parseFloat(heightInput.value);
+            const weight = parseFloat(weightInput.value);
+            
+            if (height > 0 && weight > 0) {
+                // BMI = weight (kg) / (height (m))^2
+                const heightInMeters = height / 100;
+                const bmi = weight / (heightInMeters * heightInMeters);
+                bmiInput.value = bmi.toFixed(1);
+            } else {
+                bmiInput.value = '';
+            }
+        }
+        
+        heightInput.addEventListener('input', calculateBMI);
+        weightInput.addEventListener('input', calculateBMI);
+        
+        // Add event listener for form submission
+        document.getElementById('healthForm').addEventListener('submit', async function(e) {
+            // Prevent default form submission behaviour (page reload)
+            e.preventDefault();
+            
+            // Collect all health form data into a JavaScript object
+            const healthData = {
+                height: document.getElementById('height').value,
+                weight: document.getElementById('weight').value,
+                bmi: document.getElementById('bmi').value,
+                medications: document.getElementById('medications').value,
+                medicalConditions: document.getElementById('medicalConditions').value,
+                surgeries: document.getElementById('surgeries').value,
+                familyHistory: document.getElementById('familyHistory').value,
+                mentalHealth: document.getElementById('mentalHealth').value,
+                bloodPressure: document.getElementById('bloodPressure').value,
+                cholesterol: document.getElementById('cholesterol').value,
+                submittedAt: new Date().toISOString() // Add timestamp of submission
+            };
+            
+            const messageDiv = document.getElementById('message');
+            
+            try {
+                // Send health data to the Flask backend server
+                const response = await fetch('http://localhost:5000/submit-health', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(healthData)
+                });
+                
+                // Parse the JSON response from the server
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Display success message to the user
+                    messageDiv.innerHTML = `
+                        <div class="success">
+                            <p><strong>Thank you for completing your health history!</strong></p>
+                            <p>Your health data has been saved to: <strong>${result.filename}</strong></p>
+                            <p><strong>BMI:</strong> ${healthData.bmi}</p>
+                            <p><strong>Blood Pressure:</strong> ${healthData.bloodPressure}</p>
+                        </div>
+                    `;
+                    
+                    // Scroll to the message
+                    messageDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // Display error message if server returned an error
+                    messageDiv.innerHTML = `
+                        <div class="error">
+                            <p><strong>Error:</strong> ${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                // Display error message if the request failed
+                messageDiv.innerHTML = `
+                    <div class="error">
+                        <p><strong>Error:</strong> Could not connect to server. Please make sure the Flask server is running.</p>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -79,7 +79,7 @@
             </div>
             
             <!-- Submit button -->
-            <button type="submit">Submit</button>
+            <button type="submit">Next: Health & Medical History</button>
         </form>
         
         <!-- Container for success/error messages -->
@@ -121,16 +121,8 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Display success message to the user
-                    messageDiv.innerHTML = `
-                        <div class="success">
-                            <p><strong>Thank you for submitting your information!</strong></p>
-                            <p>Your application data has been saved to: <strong>${result.filename}</strong></p>
-                            <p><strong>Name:</strong> ${formData.fullName}</p>
-                            <p><strong>Date of Birth:</strong> ${formData.dateOfBirth}</p>
-                            <p><strong>Occupation:</strong> ${formData.occupation}</p>
-                        </div>
-                    `;
+                    // Redirect to health history page
+                    window.location.href = 'health.html';
                 } else {
                     // Display error message if server returned an error
                     messageDiv.innerHTML = `
