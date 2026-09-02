@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Character encoding for proper text display -->
+    <meta charset="UTF-8">
+    <!-- Viewport settings for responsive design on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Information</title>
+    <!-- Link to external CSS stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Progress bar -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 25%;">25%</div>
+        </div>
+        <div class="progress-text">Step 1 of 4: Personal Information</div>
+    </div>
+    
+    <!-- Main container for the form -->
+    <div class="container">
+        <h1>Life Insurance Application</h1>
+        <p>Please enter your personal details below:</p>
+        
+        <!-- Life insurance application form -->
+        <form id="userForm">
+            <!-- Full name input field -->
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+            
+            <!-- Date of birth input field -->
+            <div class="form-group">
+                <label for="dateOfBirth">Date of Birth</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+            </div>
+            
+            <!-- Address textarea field -->
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" rows="3" required></textarea>
+            </div>
+            
+            <!-- Gender dropdown selection -->
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Please select...</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                </select>
+            </div>
+            
+            <!-- Occupation input field -->
+            <div class="form-group">
+                <label for="occupation">Occupation</label>
+                <input type="text" id="occupation" name="occupation" required>
+            </div>
+            
+            <!-- Marital status dropdown selection -->
+            <div class="form-group">
+                <label for="maritalStatus">Marital Status</label>
+                <select id="maritalStatus" name="maritalStatus" required>
+                    <option value="">Please select...</option>
+                    <option value="single">Single</option>
+                    <option value="married">Married</option>
+                    <option value="civil-partnership">Civil Partnership</option>
+                    <option value="divorced">Divorced</option>
+                    <option value="widowed">Widowed</option>
+                </select>
+            </div>
+            
+            <!-- Number of dependants input field (numeric) -->
+            <div class="form-group">
+                <label for="dependants">Number of Dependants</label>
+                <input type="number" id="dependants" name="dependants" min="0" required>
+            </div>
+            
+            <!-- Submit button -->
+            <button type="submit">Next: Health and Medical History</button>
+        </form>
+        
+        <!-- Container for success/error messages -->
+        <div id="message"></div>
+    </div>
+    
+    <script>
+        // Validation functions
+        function validateFullName(name) {
+            // Check for at least two words separated by space, no numbers or special characters
+            const namePattern = /^[A-Za-z]+(\s[A-Za-z]+)+$/;
+            return namePattern.test(name.trim());
+        }
+        
+        function validateDateOfBirth(dob) {
+            const date = new Date(dob);
+            const today = new Date();
+            const age = today.getFullYear() - date.getFullYear();
+            const monthDiff = today.getMonth() - date.getMonth();
+            
+            // Check if date is valid and person is between 18 and 100 years old
+            if (isNaN(date.getTime())) return { valid: false, message: 'Invalid date' };
+            if (date > today) return { valid: false, message: 'Date of birth cannot be in the future' };
+            
+            const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate()) ? age - 1 : age;
+            
+            if (actualAge < 18) return { valid: false, message: 'You must be at least 18 years old' };
+            if (actualAge > 100) return { valid: false, message: 'Please verify your date of birth' };
+            
+            return { valid: true };
+        }
+        
+        function validateAddress(address) {
+            // Check address has at least 10 characters and contains some numbers (for house number/postcode)
+            return address.trim().length >= 10 && /\d/.test(address);
+        }
+        
+        function validateOccupation(occupation) {
+            // Check occupation contains only letters, spaces, and hyphens
+            const occupationPattern = /^[A-Za-z\s\-]+$/;
+            return occupationPattern.test(occupation.trim()) && occupation.trim().length >= 2;
+        }
+        
+        // Add real-time validation feedback
+        document.getElementById('fullName').addEventListener('blur', function() {
+            const name = this.value;
+            if (!validateFullName(name)) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('nameError')) {
+                    const error = document.createElement('small');
+                    error.id = 'nameError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Please enter your full name (first and last name, letters only)';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('nameError');
+                if (error) error.remove();
+            }
+        });
+        
+        document.getElementById('dateOfBirth').addEventListener('blur', function() {
+            const validation = validateDateOfBirth(this.value);
+            if (!validation.valid) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('dobError')) {
+                    const error = document.createElement('small');
+                    error.id = 'dobError';
+                    error.style.color = '#dc3545';
+                    error.textContent = validation.message;
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('dobError');
+                if (error) error.remove();
+            }
+        });
+        
+        document.getElementById('address').addEventListener('blur', function() {
+            const address = this.value;
+            if (!validateAddress(address)) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('addressError')) {
+                    const error = document.createElement('small');
+                    error.id = 'addressError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Please enter a complete address (minimum 10 characters with house number)';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('addressError');
+                if (error) error.remove();
+            }
+        });
+        
+        document.getElementById('occupation').addEventListener('blur', function() {
+            const occupation = this.value;
+            if (!validateOccupation(occupation)) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('occupationError')) {
+                    const error = document.createElement('small');
+                    error.id = 'occupationError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Please enter a valid occupation (letters, spaces, and hyphens only)';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('occupationError');
+                if (error) error.remove();
+            }
+        });
+        
+        // Add event listener for form submission
+        document.getElementById('userForm').addEventListener('submit', async function(e) {
+            // Prevent default form submission behaviour (page reload)
+            e.preventDefault();
+            
+            // Get form values
+            const fullName = document.getElementById('fullName').value;
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+            const address = document.getElementById('address').value;
+            const occupation = document.getElementById('occupation').value;
+            
+            // Validate all fields
+            const nameValid = validateFullName(fullName);
+            const dobValidation = validateDateOfBirth(dateOfBirth);
+            const addressValid = validateAddress(address);
+            const occupationValid = validateOccupation(occupation);
+            
+            // Show error message if validation fails
+            if (!nameValid || !dobValidation.valid || !addressValid || !occupationValid) {
+                const messageDiv = document.getElementById('message');
+                messageDiv.innerHTML = `
+                    <div class="error">
+                        <p><strong>Please correct the following errors:</strong></p>
+                        ${!nameValid ? '<p>• Full name must contain at least first and last name (letters only)</p>' : ''}
+                        ${!dobValidation.valid ? '<p>• ' + dobValidation.message + '</p>' : ''}
+                        ${!addressValid ? '<p>• Address must be at least 10 characters and include a house number</p>' : ''}
+                        ${!occupationValid ? '<p>• Occupation must contain only letters, spaces, and hyphens</p>' : ''}
+                    </div>
+                `;
+                messageDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
+            // Collect all form data into a JavaScript object
+            const formData = {
+                fullName: fullName,
+                dateOfBirth: dateOfBirth,
+                address: address,
+                gender: document.getElementById('gender').value,
+                occupation: occupation,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                dependants: document.getElementById('dependants').value,
+                submittedAt: new Date().toISOString() // Add timestamp of submission
+            };
+            
+            // Save form data to localStorage
+            localStorage.setItem('personalInfo', JSON.stringify(formData));
+            
+            // Redirect to health history page
+            window.location.href = 'health.html';
+        });
+    </script>
+</body>
+</html>

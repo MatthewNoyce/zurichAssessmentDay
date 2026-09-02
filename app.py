@@ -144,8 +144,13 @@ def submit_complete():
 
 @app.route('/')
 def index():
-    """Serve the main HTML page."""
+    """Serve the main landing page."""
     return app.send_static_file('index.html')
+
+@app.route('/personal.html')
+def personal():
+    """Serve the personal information page."""
+    return app.send_static_file('personal.html')
 
 @app.route('/health.html')
 def health():
