@@ -78,7 +78,7 @@
             </div>
             
             <!-- Submit button -->
-            <button type="submit">Submit Application</button>
+            <button type="submit">Next: Lifestyle & Driving History</button>
         </form>
         
         <!-- Container for success/error messages -->
@@ -144,18 +144,8 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Display success message to the user
-                    messageDiv.innerHTML = `
-                        <div class="success">
-                            <p><strong>Thank you for completing your health history!</strong></p>
-                            <p>Your health data has been saved to: <strong>${result.filename}</strong></p>
-                            <p><strong>BMI:</strong> ${healthData.bmi}</p>
-                            <p><strong>Blood Pressure:</strong> ${healthData.bloodPressure}</p>
-                        </div>
-                    `;
-                    
-                    // Scroll to the message
-                    messageDiv.scrollIntoView({ behavior: 'smooth' });
+                    // Redirect to lifestyle page
+                    window.location.href = 'lifestyle.html';
                 } else {
                     // Display error message if server returned an error
                     messageDiv.innerHTML = `

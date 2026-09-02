@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Character encoding for proper text display -->
+    <meta charset="UTF-8">
+    <!-- Viewport settings for responsive design on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifestyle & Driving History</title>
+    <!-- Link to external CSS stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main container for the form -->
+    <div class="container">
+        <h1>Lifestyle & Driving History</h1>
+        <p>Please provide information about your lifestyle and driving history:</p>
+        
+        <!-- Lifestyle and driving history form -->
+        <form id="lifestyleForm">
+            <!-- Smoking/tobacco use section -->
+            <div class="form-group">
+                <label for="smoker">Do you smoke or use tobacco products?</label>
+                <select id="smoker" name="smoker" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                    <option value="former">Former smoker</option>
+                </select>
+            </div>
+            
+            <!-- Smoking details (shown if yes) -->
+            <div class="form-group" id="smokingDetails" style="display: none;">
+                <label for="smokingAmount">How much do you smoke per day?</label>
+                <input type="text" id="smokingAmount" name="smokingAmount" placeholder="e.g., 10 cigarettes">
+            </div>
+            
+            <div class="form-group" id="smokingDuration" style="display: none;">
+                <label for="smokingYears">For how long have you smoked?</label>
+                <input type="text" id="smokingYears" name="smokingYears" placeholder="e.g., 5 years">
+            </div>
+            
+            <!-- Alcohol consumption -->
+            <div class="form-group">
+                <label for="alcohol">Alcohol consumption habits</label>
+                <select id="alcohol" name="alcohol" required>
+                    <option value="">Please select...</option>
+                    <option value="none">None</option>
+                    <option value="occasional">Occasional (1-2 drinks per week)</option>
+                    <option value="moderate">Moderate (3-7 drinks per week)</option>
+                    <option value="regular">Regular (8-14 drinks per week)</option>
+                    <option value="heavy">Heavy (15+ drinks per week)</option>
+                </select>
+            </div>
+            
+            <!-- Recreational drug use -->
+            <div class="form-group">
+                <label for="drugs">Recreational drug use</label>
+                <select id="drugs" name="drugs" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                    <option value="former">Former user</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="drugDetails" style="display: none;">
+                <label for="drugInfo">Please provide details</label>
+                <textarea id="drugInfo" name="drugInfo" rows="3" placeholder="Type of drugs and frequency"></textarea>
+            </div>
+            
+            <!-- Hazardous activities -->
+            <div class="form-group">
+                <label for="hazardousActivities">Do you participate in hazardous activities?</label>
+                <select id="hazardousActivities" name="hazardousActivities" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="activitiesDetails" style="display: none;">
+                <label for="activitiesInfo">Please specify activities</label>
+                <textarea id="activitiesInfo" name="activitiesInfo" rows="3" placeholder="e.g., skydiving, scuba diving, motor racing"></textarea>
+            </div>
+            
+            <!-- Driving licence status -->
+            <div class="form-group">
+                <label for="licenceStatus">Driving licence status</label>
+                <select id="licenceStatus" name="licenceStatus" required>
+                    <option value="">Please select...</option>
+                    <option value="full">Full UK licence</option>
+                    <option value="provisional">Provisional licence</option>
+                    <option value="international">International licence</option>
+                    <option value="none">No licence</option>
+                    <option value="suspended">Suspended</option>
+                    <option value="revoked">Revoked</option>
+                </select>
+            </div>
+            
+            <!-- Motoring convictions -->
+            <div class="form-group">
+                <label for="convictions">Any motoring convictions?</label>
+                <select id="convictions" name="convictions" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="convictionsDetails" style="display: none;">
+                <label for="convictionsInfo">Please provide details</label>
+                <textarea id="convictionsInfo" name="convictionsInfo" rows="3" placeholder="Type of conviction and date"></textarea>
+            </div>
+            
+            <!-- Accidents -->
+            <div class="form-group">
+                <label for="accidents">Any motoring accidents in the last 5 years?</label>
+                <select id="accidents" name="accidents" required>
+                    <option value="">Please select...</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="accidentsDetails" style="display: none;">
+                <label for="accidentsInfo">Please provide details</label>
+                <textarea id="accidentsInfo" name="accidentsInfo" rows="3" placeholder="Date, circumstances, and fault status"></textarea>
+            </div>
+            
+            <!-- Submit button -->
+            <button type="submit">Submit Application</button>
+        </form>
+        
+        <!-- Container for success/error messages -->
+        <div id="message"></div>
+    </div>
+    
+    <script>
+        // Show/hide conditional fields based on selections
+        document.getElementById('smoker').addEventListener('change', function() {
+            const smokingDetails = document.getElementById('smokingDetails');
+            const smokingDuration = document.getElementById('smokingDuration');
+            if (this.value === 'yes') {
+                smokingDetails.style.display = 'block';
+                smokingDuration.style.display = 'block';
+                document.getElementById('smokingAmount').required = true;
+                document.getElementById('smokingYears').required = true;
+            } else {
+                smokingDetails.style.display = 'none';
+                smokingDuration.style.display = 'none';
+                document.getElementById('smokingAmount').required = false;
+                document.getElementById('smokingYears').required = false;
+            }
+        });
+        
+        document.getElementById('drugs').addEventListener('change', function() {
+            const drugDetails = document.getElementById('drugDetails');
+            if (this.value === 'yes' || this.value === 'former') {
+                drugDetails.style.display = 'block';
+                document.getElementById('drugInfo').required = true;
+            } else {
+                drugDetails.style.display = 'none';
+                document.getElementById('drugInfo').required = false;
+            }
+        });
+        
+        document.getElementById('hazardousActivities').addEventListener('change', function() {
+            const activitiesDetails = document.getElementById('activitiesDetails');
+            if (this.value === 'yes') {
+                activitiesDetails.style.display = 'block';
+                document.getElementById('activitiesInfo').required = true;
+            } else {
+                activitiesDetails.style.display = 'none';
+                document.getElementById('activitiesInfo').required = false;
+            }
+        });
+        
+        document.getElementById('convictions').addEventListener('change', function() {
+            const convictionsDetails = document.getElementById('convictionsDetails');
+            if (this.value === 'yes') {
+                convictionsDetails.style.display = 'block';
+                document.getElementById('convictionsInfo').required = true;
+            } else {
+                convictionsDetails.style.display = 'none';
+                document.getElementById('convictionsInfo').required = false;
+            }
+        });
+        
+        document.getElementById('accidents').addEventListener('change', function() {
+            const accidentsDetails = document.getElementById('accidentsDetails');
+            if (this.value === 'yes') {
+                accidentsDetails.style.display = 'block';
+                document.getElementById('accidentsInfo').required = true;
+            } else {
+                accidentsDetails.style.display = 'none';
+                document.getElementById('accidentsInfo').required = false;
+            }
+        });
+        
+        // Add event listener for form submission
+        document.getElementById('lifestyleForm').addEventListener('submit', async function(e) {
+            // Prevent default form submission behaviour (page reload)
+            e.preventDefault();
+            
+            // Collect all lifestyle form data into a JavaScript object
+            const lifestyleData = {
+                smoker: document.getElementById('smoker').value,
+                smokingAmount: document.getElementById('smokingAmount').value,
+                smokingYears: document.getElementById('smokingYears').value,
+                alcohol: document.getElementById('alcohol').value,
+                drugs: document.getElementById('drugs').value,
+                drugInfo: document.getElementById('drugInfo').value,
+                hazardousActivities: document.getElementById('hazardousActivities').value,
+                activitiesInfo: document.getElementById('activitiesInfo').value,
+                licenceStatus: document.getElementById('licenceStatus').value,
+                convictions: document.getElementById('convictions').value,
+                convictionsInfo: document.getElementById('convictionsInfo').value,
+                accidents: document.getElementById('accidents').value,
+                accidentsInfo: document.getElementById('accidentsInfo').value,
+                submittedAt: new Date().toISOString() // Add timestamp of submission
+            };
+            
+            const messageDiv = document.getElementById('message');
+            
+            try {
+                // Send lifestyle data to the Flask backend server
+                const response = await fetch('http://localhost:5000/submit-lifestyle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(lifestyleData)
+                });
+                
+                // Parse the JSON response from the server
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Display success message to the user
+                    messageDiv.innerHTML = `
+                        <div class="success">
+                            <p><strong>Thank you for completing your application!</strong></p>
+                            <p>Your lifestyle data has been saved to: <strong>${result.filename}</strong></p>
+                            <p>All sections of your life insurance application have been submitted successfully.</p>
+                        </div>
+                    `;
+                    
+                    // Scroll to the message
+                    messageDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // Display error message if server returned an error
+                    messageDiv.innerHTML = `
+                        <div class="error">
+                            <p><strong>Error:</strong> ${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                // Display error message if the request failed
+                messageDiv.innerHTML = `
+                    <div class="error">
+                        <p><strong>Error:</strong> Could not connect to server. Please make sure the Flask server is running.</p>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

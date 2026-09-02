@@ -78,6 +78,38 @@ def submit_health():
             'message': str(e)
         }), 500
 
+@app.route('/submit-lifestyle', methods=['POST'])
+def submit_lifestyle():
+    """
+    Handle lifestyle form submission endpoint.
+    Receives JSON data, saves it to a file, and returns success response.
+    """
+    try:
+        # Get JSON data from the request
+        lifestyle_data = request.get_json()
+        
+        # Generate a unique filename with timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'lifestyle_history_{timestamp}.json'
+        
+        # Save the JSON data to a file in the current directory
+        with open(filename, 'w') as f:
+            json.dump(lifestyle_data, f, indent=2)
+        
+        # Return success response
+        return jsonify({
+            'status': 'success',
+            'message': 'Lifestyle history saved successfully',
+            'filename': filename
+        }), 200
+        
+    except Exception as e:
+        # Return error response if something goes wrong
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
 @app.route('/')
 def index():
     """Serve the main HTML page."""
@@ -87,6 +119,11 @@ def index():
 def health():
     """Serve the health history page."""
     return app.send_static_file('health.html')
+
+@app.route('/lifestyle.html')
+def lifestyle():
+    """Serve the lifestyle history page."""
+    return app.send_static_file('lifestyle.html')
 
 if __name__ == '__main__':
     # Run the Flask development server
