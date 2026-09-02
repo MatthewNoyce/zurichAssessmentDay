@@ -110,28 +110,28 @@ def submit_lifestyle():
             'message': str(e)
         }), 500
 
-@app.route('/submit-financial', methods=['POST'])
-def submit_financial():
+@app.route('/submit-complete', methods=['POST'])
+def submit_complete():
     """
-    Handle financial form submission endpoint.
-    Receives JSON data, saves it to a file, and returns success response.
+    Handle complete application submission endpoint.
+    Receives all form data combined, saves it to a single JSON file, and returns success response.
     """
     try:
         # Get JSON data from the request
-        financial_data = request.get_json()
+        complete_application = request.get_json()
         
         # Generate a unique filename with timestamp
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f'financial_info_{timestamp}.json'
+        filename = f'life_insurance_application_complete_{timestamp}.json'
         
         # Save the JSON data to a file in the current directory
         with open(filename, 'w') as f:
-            json.dump(financial_data, f, indent=2)
+            json.dump(complete_application, f, indent=2)
         
         # Return success response
         return jsonify({
             'status': 'success',
-            'message': 'Financial information saved successfully',
+            'message': 'Complete application saved successfully',
             'filename': filename
         }), 200
         

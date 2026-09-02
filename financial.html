@@ -232,40 +232,56 @@
                 applicationCompletedAt: new Date().toISOString()
             };
             
-            // Convert to JSON string
-            const jsonData = JSON.stringify(completeApplication, null, 2);
-            
-            // Create a blob and download the complete application
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-            a.download = `life_insurance_application_${timestamp}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            // Clear localStorage after successful download
-            localStorage.removeItem('personalInfo');
-            localStorage.removeItem('healthInfo');
-            localStorage.removeItem('lifestyleInfo');
-            localStorage.removeItem('financialInfo');
-            
-            // Display success message to the user
-            messageDiv.innerHTML = `
-                <div class="success">
-                    <p><strong>Thank you for completing your life insurance application!</strong></p>
-                    <p>Your complete application has been downloaded as a JSON file.</p>
-                    <p><strong>Coverage Amount:</strong> £${parseInt(financialData.coverageAmount).toLocaleString()}</p>
-                    <p><strong>Primary Beneficiary:</strong> ${financialData.beneficiaryName}</p>
-                    <p>We will review your application and contact you shortly.</p>
-                </div>
-            `;
-            
-            // Scroll to the message
-            messageDiv.scrollIntoView({ behavior: 'smooth' });
+            try {
+                // Send complete application to the Flask backend server
+                const response = await fetch('http://localhost:5000/submit-complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(completeApplication)
+                });
+                
+                // Parse the JSON response from the server
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Clear localStorage after successful submission
+                    localStorage.removeItem('personalInfo');
+                    localStorage.removeItem('healthInfo');
+                    localStorage.removeItem('lifestyleInfo');
+                    localStorage.removeItem('financialInfo');
+                    
+                    // Display success message to the user
+                    messageDiv.innerHTML = `
+                        <div class="success">
+                            <p><strong>Thank you for completing your life insurance application!</strong></p>
+                            <p>Your complete application has been saved to: <strong>${result.filename}</strong></p>
+                            <p><strong>Coverage Amount:</strong> £${parseInt(financialData.coverageAmount).toLocaleString()}</p>
+                            <p><strong>Primary Beneficiary:</strong> ${financialData.beneficiaryName}</p>
+                            <p>We will review your application and contact you shortly.</p>
+                        </div>
+                    `;
+                    
+                    // Scroll to the message
+                    messageDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // Display error message if server returned an error
+                    messageDiv.innerHTML = `
+                        <div class="error">
+                            <p><strong>Error:</strong> ${result.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                // Display error message if the request failed
+                messageDiv.innerHTML = `
+                    <div class="error">
+                        <p><strong>Error:</strong> Could not connect to server. Please make sure the Flask server is running.</p>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
         });
     </script>
 </body>
