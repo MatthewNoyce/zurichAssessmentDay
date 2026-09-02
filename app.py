@@ -8,6 +8,7 @@ from flask_cors import CORS
 import json
 import os
 from datetime import datetime
+from bmi_calculator import BMICalculator
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -142,6 +143,47 @@ def submit_complete():
         return jsonify({
             'status': 'error',
             'message': str(e)
+        }), 500
+
+@app.route('/calculate-bmi', methods=['POST'])
+def calculate_bmi():
+    """
+    Calculate BMI from height and weight.
+    Receives JSON with height_cm and weight_kg, returns BMI calculation.
+    """
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+        
+        height_cm = data.get('height_cm')
+        weight_kg = data.get('weight_kg')
+        
+        # Validate inputs
+        is_valid, error_message = BMICalculator.is_valid_input(height_cm, weight_kg)
+        if not is_valid:
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 400
+        
+        # Calculate BMI
+        result = BMICalculator.calculate(float(height_cm), float(weight_kg))
+        
+        # Return success response with BMI data
+        return jsonify({
+            'status': 'success',
+            'data': result
+        }), 200
+        
+    except ValueError as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 400
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': f'Unexpected error: {str(e)}'
         }), 500
 
 @app.route('/')
