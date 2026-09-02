@@ -210,3 +210,10 @@ button:active {
     font-size: 15px;
     line-height: 1.6;
 }
+
+/* Small error text styling */
+small {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+}

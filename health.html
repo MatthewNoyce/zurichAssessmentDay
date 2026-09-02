@@ -113,26 +113,153 @@
             }
         }
         
+        // Validation functions
+        function validateHeight(height) {
+            // Height should be between 100cm and 250cm
+            return height >= 100 && height <= 250;
+        }
+        
+        function validateWeight(weight) {
+            // Weight should be between 30kg and 300kg
+            return weight >= 30 && weight <= 300;
+        }
+        
+        function validateBloodPressure(bp) {
+            // Format: systolic/diastolic (e.g., 120/80)
+            const bpPattern = /^\d{2,3}\/\d{2,3}$/;
+            if (!bpPattern.test(bp)) return false;
+            
+            const [systolic, diastolic] = bp.split('/').map(Number);
+            // Systolic: 70-250, Diastolic: 40-150
+            return systolic >= 70 && systolic <= 250 && diastolic >= 40 && diastolic <= 150;
+        }
+        
+        function validateCholesterol(cholesterol) {
+            // Cholesterol should be between 2.0 and 15.0 mmol/L
+            return cholesterol >= 2.0 && cholesterol <= 15.0;
+        }
+        
         heightInput.addEventListener('input', calculateBMI);
         weightInput.addEventListener('input', calculateBMI);
+        
+        // Add real-time validation
+        heightInput.addEventListener('blur', function() {
+            const height = parseFloat(this.value);
+            if (!validateHeight(height)) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('heightError')) {
+                    const error = document.createElement('small');
+                    error.id = 'heightError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Height must be between 100cm and 250cm';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('heightError');
+                if (error) error.remove();
+            }
+        });
+        
+        weightInput.addEventListener('blur', function() {
+            const weight = parseFloat(this.value);
+            if (!validateWeight(weight)) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('weightError')) {
+                    const error = document.createElement('small');
+                    error.id = 'weightError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Weight must be between 30kg and 300kg';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('weightError');
+                if (error) error.remove();
+            }
+        });
+        
+        document.getElementById('bloodPressure').addEventListener('blur', function() {
+            const bp = this.value;
+            if (!validateBloodPressure(bp)) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('bpError')) {
+                    const error = document.createElement('small');
+                    error.id = 'bpError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Please enter blood pressure in format: 120/80';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('bpError');
+                if (error) error.remove();
+            }
+        });
+        
+        document.getElementById('cholesterol').addEventListener('blur', function() {
+            const cholesterol = parseFloat(this.value);
+            if (this.value && !validateCholesterol(cholesterol)) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('cholesterolError')) {
+                    const error = document.createElement('small');
+                    error.id = 'cholesterolError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Cholesterol must be between 2.0 and 15.0 mmol/L';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('cholesterolError');
+                if (error) error.remove();
+            }
+        });
         
         // Add event listener for form submission
         document.getElementById('healthForm').addEventListener('submit', async function(e) {
             // Prevent default form submission behaviour (page reload)
             e.preventDefault();
             
+            // Get form values
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const bloodPressure = document.getElementById('bloodPressure').value;
+            const cholesterol = parseFloat(document.getElementById('cholesterol').value);
+            
+            // Validate all fields
+            const heightValid = validateHeight(height);
+            const weightValid = validateWeight(weight);
+            const bpValid = validateBloodPressure(bloodPressure);
+            const cholesterolValid = !cholesterol || validateCholesterol(cholesterol);
+            
+            // Show error message if validation fails
+            if (!heightValid || !weightValid || !bpValid || !cholesterolValid) {
+                const messageDiv = document.getElementById('message');
+                messageDiv.innerHTML = `
+                    <div class="error">
+                        <p><strong>Please correct the following errors:</strong></p>
+                        ${!heightValid ? '<p>• Height must be between 100cm and 250cm</p>' : ''}
+                        ${!weightValid ? '<p>• Weight must be between 30kg and 300kg</p>' : ''}
+                        ${!bpValid ? '<p>• Blood pressure must be in format: 120/80</p>' : ''}
+                        ${!cholesterolValid ? '<p>• Cholesterol must be between 2.0 and 15.0 mmol/L</p>' : ''}
+                    </div>
+                `;
+                messageDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
             // Collect all health form data into a JavaScript object
             const healthData = {
-                height: document.getElementById('height').value,
-                weight: document.getElementById('weight').value,
+                height: height,
+                weight: weight,
                 bmi: document.getElementById('bmi').value,
                 medications: document.getElementById('medications').value,
                 medicalConditions: document.getElementById('medicalConditions').value,
                 surgeries: document.getElementById('surgeries').value,
                 familyHistory: document.getElementById('familyHistory').value,
                 mentalHealth: document.getElementById('mentalHealth').value,
-                bloodPressure: document.getElementById('bloodPressure').value,
-                cholesterol: document.getElementById('cholesterol').value,
+                bloodPressure: bloodPressure,
+                cholesterol: cholesterol || '',
                 submittedAt: new Date().toISOString() // Add timestamp of submission
             };
             

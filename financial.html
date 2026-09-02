@@ -188,10 +188,110 @@
             }
         });
         
+        // Validation functions
+        function validateBeneficiaryName(name) {
+            // Check for at least two words separated by space, no numbers
+            const namePattern = /^[A-Za-z]+(\s[A-Za-z]+)+$/;
+            return namePattern.test(name.trim());
+        }
+        
+        function validateBeneficiaryDOB(dob) {
+            const date = new Date(dob);
+            const today = new Date();
+            
+            if (isNaN(date.getTime())) return { valid: false, message: 'Invalid date' };
+            if (date > today) return { valid: false, message: 'Date of birth cannot be in the future' };
+            
+            return { valid: true };
+        }
+        
+        // Add real-time validation
+        document.getElementById('beneficiaryName').addEventListener('blur', function() {
+            const name = this.value;
+            if (!validateBeneficiaryName(name)) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('beneficiaryNameError')) {
+                    const error = document.createElement('small');
+                    error.id = 'beneficiaryNameError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Please enter full name (first and last name, letters only)';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('beneficiaryNameError');
+                if (error) error.remove();
+            }
+        });
+        
+        document.getElementById('coverageAmount').addEventListener('blur', function() {
+            const amount = parseFloat(this.value);
+            if (amount < 10000 || amount > 10000000) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('coverageError')) {
+                    const error = document.createElement('small');
+                    error.id = 'coverageError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Coverage amount must be between £10,000 and £10,000,000';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('coverageError');
+                if (error) error.remove();
+            }
+        });
+        
+        document.getElementById('annualIncome').addEventListener('blur', function() {
+            const income = parseFloat(this.value);
+            if (income < 0 || income > 10000000) {
+                this.style.borderColor = '#dc3545';
+                if (!document.getElementById('incomeError')) {
+                    const error = document.createElement('small');
+                    error.id = 'incomeError';
+                    error.style.color = '#dc3545';
+                    error.textContent = 'Please enter a valid annual income';
+                    this.parentElement.appendChild(error);
+                }
+            } else {
+                this.style.borderColor = '#28a745';
+                const error = document.getElementById('incomeError');
+                if (error) error.remove();
+            }
+        });
+        
         // Add event listener for form submission
         document.getElementById('financialForm').addEventListener('submit', async function(e) {
             // Prevent default form submission behaviour (page reload)
             e.preventDefault();
+            
+            // Get form values
+            const beneficiaryName = document.getElementById('beneficiaryName').value;
+            const beneficiaryDOB = document.getElementById('beneficiaryDOB').value;
+            const coverageAmount = parseFloat(document.getElementById('coverageAmount').value);
+            const annualIncome = parseFloat(document.getElementById('annualIncome').value);
+            
+            // Validate fields
+            const beneficiaryNameValid = validateBeneficiaryName(beneficiaryName);
+            const beneficiaryDOBValidation = validateBeneficiaryDOB(beneficiaryDOB);
+            const coverageValid = coverageAmount >= 10000 && coverageAmount <= 10000000;
+            const incomeValid = annualIncome >= 0 && annualIncome <= 10000000;
+            
+            // Show error message if validation fails
+            if (!beneficiaryNameValid || !beneficiaryDOBValidation.valid || !coverageValid || !incomeValid) {
+                const messageDiv = document.getElementById('message');
+                messageDiv.innerHTML = `
+                    <div class="error">
+                        <p><strong>Please correct the following errors:</strong></p>
+                        ${!beneficiaryNameValid ? '<p>• Beneficiary name must contain first and last name (letters only)</p>' : ''}
+                        ${!beneficiaryDOBValidation.valid ? '<p>• ' + beneficiaryDOBValidation.message + '</p>' : ''}
+                        ${!coverageValid ? '<p>• Coverage amount must be between £10,000 and £10,000,000</p>' : ''}
+                        ${!incomeValid ? '<p>• Please enter a valid annual income</p>' : ''}
+                    </div>
+                `;
+                messageDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
             
             // Collect all financial form data into a JavaScript object
             const financialData = {
